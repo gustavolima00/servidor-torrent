@@ -1,13 +1,14 @@
 import WebTorrent from "webtorrent";
 
 export class TorrentService {
-  constructor() {
+  constructor(downloadPath) {
     this.client = new WebTorrent();
+    this.downloadPath = downloadPath;
   }
 
   addTorrent(magnetUri) {
     return this.client.add(magnetUri, {
-      path: "./downloads/",
+      path: this.downloadPath,
     });
   }
 

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Baixar Torrent</title>
+</head>
+<body>
+    <form id="downloadForm">
+        <label for="magnetUri">Magnet URI:</label>
+        <input type="text" id="magnetUri" name="magnetUri" required>
+        <button type="button" onclick="download()">Baixar</button>
+    </form>
+
+    <script>
+        function download() {
+            const magnetUri = document.getElementById('magnetUri').value;
+            if(!magnetUri) return alert('Por favor, insira uma Magnet URI válida.');
+            
+            fetch(`/torrent/download-with-magnet?magnet=${encodeURIComponent(magnetUri)}`, {
+                method: 'GET',
+            })
+            .then(response => {
+                if(!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                return response.text();
+            })
+            .then(message => {
+                alert(message);
+            })
+            .catch(error => {
+                alert('Erro ao baixar o torrent: ' + error);
+            });
+        }
+    </script>
+</body>
+</html>

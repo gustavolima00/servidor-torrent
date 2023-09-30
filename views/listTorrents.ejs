@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= title %></title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+      }
+      .torrent {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <% torrents.forEach(torrent => { %>
+    <div class="torrent" data-infohash="<%= torrent.infoHash %>">
+      <p>Name: <%= torrent.name %></p>
+      <p>Info Hash: <%= torrent.infoHash %></p>
+      <p>Progress: <%= (torrent.progress * 100).toFixed(2) %> %</p>
+      <button class="remove-torrent-button">Remover</button>
+    </div>
+    <% }) %>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const removeButtons = document.querySelectorAll(
+          ".remove-torrent-button"
+        );
+
+        removeButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const torrentDiv = button.closest(".torrent");
+            const infoHash = torrentDiv.dataset.infohash;
+
+            fetch(`/torrent/${infoHash}`, {
+              method: "DELETE",
+            }).then((response) => {
+              if (response.ok) {
+                torrentDiv.remove();
+              } else {
+                alert("Erro ao remover torrent", response.body());
+              }
+            });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

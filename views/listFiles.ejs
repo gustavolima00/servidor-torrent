@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>File Manager</title>
+    <style>
+      .folder-card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        transition: 0.3s;
+        width: 30%; /* Diminuído para tornar o card mais pequeno */
+        margin-bottom: 20px;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #f1f1f1;
+        flex-direction: column;
+        display: flex;
+        align-items: flex-start;
+      }
+      .folder-card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        transition: 0.3s;
+        width: 30%; /* Diminuído para tornar o card mais pequeno */
+        margin-bottom: 20px;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #f1f1f1;
+        flex-direction: row;
+        display: flex;
+        align-items: flex-start;
+      }
+
+      .card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      .icon {
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>File Manager</h1>
+    <div id="file-manager">
+      <% items.forEach(item => { %> <% if (item.isDirectory) { %>
+      <div class="folder-card">
+        <a href="<%= item.url %>">
+          <span class="icon">📁</span>
+          <p><%= item.name %></p>
+        </a>
+      </div>
+      <% } else { const ext = item.name.split('.').pop(); %>
+      <div class="card">
+        <% if (['mp4', 'mkv', 'avi'].includes(ext)) { %>
+        <a href="/video-player?path=<%= currentDir %>/<%= item.name %>">
+          <span class="icon">🎥</span>
+          <p><%= item.name %></p>
+        </a>
+        <% } else { %>
+        <a href="<%= item.url %>" target="_blank">
+          <span class="icon">📄</span>
+          <p><%= item.name %></p>
+        </a>
+        <% } %>
+      </div>
+      <% } %> <% }) %>
+    </div>
+  </body>
+</html>

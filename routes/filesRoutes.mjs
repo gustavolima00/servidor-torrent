@@ -5,7 +5,7 @@ import path from "path";
 export default function createTorrentsRouter(downloadPath) {
   const router = Router();
 
-  router.get("/list", (req, res) => {
+  router.get("/", (req, res) => {
     const dir = req.query.dir ? req.query.dir : "/";
     const fullPath = path.join(downloadPath, dir);
 
@@ -21,15 +21,6 @@ export default function createTorrentsRouter(downloadPath) {
 
       res.render("listFiles", { items, currentDir: dir });
     });
-  });
-
-  router.get("/video-player", (req, res) => {
-    const videoPath = req.query.path;
-    res.render("videoPlayer", { videoPath });
-  });
-
-  router.get("/", (req, res) => {
-    res.render("listFiles");
   });
 
   return router;

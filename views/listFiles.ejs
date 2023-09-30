@@ -55,12 +55,12 @@
       <% } else { const ext = item.name.split('.').pop(); %>
       <div class="card">
         <% if (['mp4', 'mkv', 'avi'].includes(ext)) { %>
-        <a href="/video-player?path=<%= currentDir %>/<%= item.name %>">
+        <a href="/downloads<%= currentDir %>/<%= item.name %>" target="_blank">
           <span class="icon">🎥</span>
           <p><%= item.name %></p>
         </a>
         <% } else { %>
-        <a href="<%= item.url %>" target="_blank">
+        <a href="/downloads<%= currentDir %>/<%= item.name %>" target="_blank">
           <span class="icon">📄</span>
           <p><%= item.name %></p>
         </a>

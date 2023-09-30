@@ -5,7 +5,7 @@ import createFilesRouter from "./routes/filesRoutes.mjs";
 
 const DOWNLOAD_PATH = "./downloads";
 const PORT = 3000;
-const app = createServer();
+const app = createServer(DOWNLOAD_PATH);
 const torrentManager = new TorrentService(DOWNLOAD_PATH);
 const torrentsRouter = createTorrentsRouter(torrentManager);
 const filesRouter = createFilesRouter(DOWNLOAD_PATH);

@@ -14,7 +14,7 @@ export default function createTorrentsRouter(downloadPath) {
 
       const items = files.map((file) => {
         const url = file.isDirectory()
-          ? `/list?dir=${path.join(dir, file.name)}`
+          ? `/?dir=${path.join(dir, file.name)}`
           : null;
         return { name: file.name, isDirectory: file.isDirectory(), url };
       });

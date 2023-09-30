@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-export function createRouter(torrentManager) {
+export default function createTorrentsRouter(torrentManager) {
   const router = Router();
 
   router.get("/torrent/", (req, res) => {

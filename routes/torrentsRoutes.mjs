@@ -24,13 +24,17 @@ export default function createTorrentsRouter(torrentManager) {
 
   router.get("/torrent/download-with-magnet", (req, res) => {
     const magnetUri = req.query.magnet;
+    const downloadPath = req.query.downloadPath || "";
 
     if (!magnetUri) {
       return res.status(400).send("Magnet URI é obrigatório");
     }
 
     try {
-      torrentManager.addTorrent(magnetUri);
+      console.log(
+        `Adicionando torrent ${magnetUri} com downloadPath: ${downloadPath}`
+      );
+      torrentManager.addTorrent(magnetUri, downloadPath);
       res.send(`Torrent adicionado.`);
     } catch (err) {
       console.error(err);

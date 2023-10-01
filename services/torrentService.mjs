@@ -30,13 +30,11 @@ class MagnetURIFileManager {
     writeFileSync(this.magnetURIFile, JSON.stringify(magnetURIs, null, 2));
   }
 
-  torrentExists(magnetURI, downloadPath) {
+  torrentExists(magnetURI) {
     const magnetURIs = this.getMagnetURIs();
 
-    return magnetURIs.some(
-      ({ magnetURI: currentMagnetUri, downloadPath: currentDownloadPath }) =>
-        this.magnetsAreEqual(magnetURI, currentMagnetUri) &&
-        currentDownloadPath === downloadPath
+    return magnetURIs.some(({ magnetURI: currentMagnetUri }) =>
+      this.magnetsAreEqual(magnetURI, currentMagnetUri)
     );
   }
 
@@ -44,13 +42,12 @@ class MagnetURIFileManager {
     const magnetURIs = this.getMagnetURIs();
 
     const torrentAlredyExists = magnetURIs.some(
-      ({ magnetURI: currentMagnetUri, downloadPath: currentDownloadPath }) =>
-        this.magnetsAreEqual(magnetURI, currentMagnetUri) &&
-        currentDownloadPath === downloadPath
+      ({ magnetURI: currentMagnetUri }) =>
+        this.magnetsAreEqual(magnetURI, currentMagnetUri)
     );
 
     if (torrentAlredyExists) {
-      return;
+      throw new Error("Torrent já adicionado");
     }
 
     magnetURIs.push({
@@ -88,12 +85,11 @@ export class TorrentService {
   addTorrent(magnetURI, downloadPath = "") {
     const fullDownloadPath = path.join(this.downloadsFolder, downloadPath);
 
-    if (this.uriFileManager.torrentExists(magnetURI, fullDownloadPath)) {
+    if (this.uriFileManager.torrentExists(magnetURI)) {
       throw new Error("Torrent já adicionado");
     }
+
     const torrent = this.client.add(magnetURI, { path: fullDownloadPath });
-    console.log('Torrent name: ', torrent.name);
-    console.log('Folder: ', fullDownloadPath)
     this.uriFileManager.addTorrentOnFile(magnetURI, fullDownloadPath);
 
     torrent.on("done", () => {
@@ -135,6 +131,7 @@ export class TorrentService {
         progress: torrent.progress,
         downloadSpeed: torrent.downloadSpeed,
         uploaded: torrent.uploaded,
+        path: torrent.path,
       };
     });
 

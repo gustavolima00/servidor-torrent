@@ -91,8 +91,16 @@ export class TorrentService {
     if (this.uriFileManager.torrentExists(magnetURI, fullDownloadPath)) {
       throw new Error("Torrent já adicionado");
     }
-    this.client.add(magnetURI, { path: fullDownloadPath });
+    const torrent = this.client.add(magnetURI, { path: fullDownloadPath });
+    console.log('Torrent name: ', torrent.name);
+    console.log('Folder: ', fullDownloadPath)
     this.uriFileManager.addTorrentOnFile(magnetURI, fullDownloadPath);
+
+    torrent.on("done", () => {
+      console.log("Download concluído: " + torrent.name, torrent.infoHash);
+
+      this.removeTorrent(torrent.infoHash);
+    });
   }
 
   loadTorrents() {

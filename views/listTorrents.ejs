@@ -20,6 +20,7 @@
     <div class="torrent" data-infohash="<%= torrent.infoHash %>">
       <p>Name: <%= torrent.name %></p>
       <p>Info Hash: <%= torrent.infoHash %></p>
+      <p>Download Path: <%= torrent.path %></p>
       <p>Progress: <%= (torrent.progress * 100).toFixed(2) %> %</p>
       <button class="remove-torrent-button">Remover</button>
     </div>

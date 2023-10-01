@@ -1,0 +1,8 @@
+version: "3"
+services:
+  meu-app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./downloads:/usr/src/app/downloads

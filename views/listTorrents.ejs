@@ -15,7 +15,19 @@
     </style>
   </head>
   <body>
-    <h1><%= title %></h1>
+    <h1>Arquivos sendo baixados</h1>
+
+    <h2>Baixar novo torrent</h2>
+    <form id="downloadForm">
+      <label for="magnetUri">Magnet URI:</label>
+      <input type="text" id="magnetUri" name="magnetUri" required />
+      <label for="downloadPath">Download path:</label>
+      <input type="text" id="downloadPath" name="downloadPath" value="" />
+      <button type="button" onclick="download()">Baixar</button>
+    </form>
+
+    <h2>Torrents</h2>
+
     <% torrents.forEach(torrent => { %>
     <div class="torrent" data-infohash="<%= torrent.infoHash %>">
       <p>Name: <%= torrent.name %></p>
@@ -49,6 +61,38 @@
           });
         });
       });
+
+      function download() {
+        const magnetUri = document.getElementById("magnetUri").value;
+        const downloadPath = document.getElementById("downloadPath").value;
+
+        if (!magnetUri)
+          return alert("Por favor, insira uma Magnet URI válida.");
+
+        fetch(
+          `/torrent/download?magnet=${encodeURIComponent(
+            magnetUri
+          )}&downloadPath=${encodeURIComponent(downloadPath)}`,
+          {
+            method: "GET",
+          }
+        )
+          .then((response) => {
+            if (!response.ok)
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            return response.text();
+          })
+          .then((message) => {
+            alert(message);
+          })
+          .catch((error) => {
+            console.error(error);
+            alert("Erro ao baixar o torrent: " + error.message);
+          });
+
+        // Reload page
+        window.location.reload();
+      }
     </script>
   </body>
 </html>

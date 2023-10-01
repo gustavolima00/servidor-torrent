@@ -19,10 +19,6 @@ export default function createTorrentsRouter(torrentManager) {
   });
 
   router.get("/torrent/download", (req, res) => {
-    res.render("downloadTorrent");
-  });
-
-  router.get("/torrent/download-with-magnet", (req, res) => {
     const magnetUri = req.query.magnet;
     const downloadPath = req.query.downloadPath || "";
 

@@ -7,6 +7,7 @@ const __dirname = dirname(__filename);
 
 export function createServer(downloadPath) {
   const app = express();
+  app.use(express.static("public"));
   app.use("/downloads", express.static(path.join(__dirname, downloadPath)));
   app.set("view engine", "ejs");
 

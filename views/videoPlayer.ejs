@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title><%= fileName %></title>
+    <title><%= name %></title>
     <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
     <script src="https://vjs.zencdn.net/7.10.2/video.min.js"></script>
   </head>
@@ -16,14 +16,10 @@
       height="264"
       data-setup="{}"
     >
-      <source src="<%= filePath %>" type="<% mimeType %>" />
-      <track
-        label="Português"
-        kind="subtitles"
-        srclang="pt"
-        src="<%= captionsPath %>"
-        default
-      />
+      <source src="<%= videoPath %>" type="<%= mimeType %>" />
+      <% captions.forEach(caption => { %> <track label="<%= caption.label %>"
+      kind="subtitles" srclang="<%= caption.lang %>" src="<%= caption.src %>"
+      <%= caption.default ? 'default' : '' %> /> <% }) %>
     </video>
   </body>
 </html>

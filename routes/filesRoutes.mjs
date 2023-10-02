@@ -33,23 +33,51 @@ export default function createTorrentsRouter(downloadPath) {
   });
 
   router.get("/video-player", (req, res) => {
-    const filePath = req.query.path;
-    if (!filePath) {
+    const videoPath = req.query.path;
+
+    if (!req.query.path) {
       return res.status(400).send("Missing file path");
     }
-    const fileName = path.basename(filePath);
-    const fileExtension = path.extname(filePath);
-    const mimeType = getMimeType(fileExtension);
-    const captionsPath = filePath.replace(fileExtension, ".vtt");
 
-    const fileNameWithoutExtension = fileName.replace(fileExtension, "");
+    const realVideoPath = path.join(global.__basedir, req.query.path);
+    const videoDir = path.dirname(realVideoPath);
+
+    console.log({ realVideoPath, videoDir });
+
+    if (!fs.existsSync(realVideoPath)) {
+      return res.status(404).send("Video not found");
+    }
+    const fileExtension = path.extname(videoPath);
+    const mimeType = getMimeType(fileExtension);
+    const name = path.basename(videoPath).replace(fileExtension, "");
+
+    const captions = [];
+    fs.readdirSync(videoDir).forEach((file) => {
+      const filePath = path.join(videoDir, file).replace(global.__basedir, "");
+      const ext = path.extname(file);
+      if (ext === ".vtt" && file.startsWith(name)) {
+        const langCode = file.split("_")[1].split(".")[0];
+        captions.push({
+          src: filePath,
+          lang: langCode,
+          label: langCode.toUpperCase(),
+          default: langCode === "pt",
+        });
+      }
+    });
+
+    console.log({
+      videoPath,
+      name,
+      mimeType,
+      captions,
+    });
 
     res.render("videoPlayer", {
-      filePath,
-      fileName: fileNameWithoutExtension,
-      fileExtension,
+      videoPath,
+      name,
       mimeType,
-      captionsPath,
+      captions,
     });
   });
 

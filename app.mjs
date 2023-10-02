@@ -2,6 +2,14 @@ import { createServer } from "./server.mjs";
 import { TorrentService } from "./services/torrentService.mjs";
 import createTorrentsRouter from "./routes/torrentsRoutes.mjs";
 import createFilesRouter from "./routes/filesRoutes.mjs";
+import { dirname } from "path";
+
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+global.__basedir = __dirname;
 
 const DOWNLOAD_PATH = "./downloads";
 const PORT = 3000;

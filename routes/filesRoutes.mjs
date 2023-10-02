@@ -2,6 +2,15 @@ import { Router } from "express";
 import fs from "fs";
 import path from "path";
 
+function getMimeType(fileExtension) {
+  const mimeTypes = {
+    ".mp4": "video/mp4",
+    ".mkv": "video/x-matroska",
+    ".avi": "video/x-msvideo",
+  };
+  return mimeTypes[fileExtension];
+}
+
 export default function createTorrentsRouter(downloadPath) {
   const router = Router();
 
@@ -20,6 +29,25 @@ export default function createTorrentsRouter(downloadPath) {
       });
 
       res.render("listFiles", { items, currentDir: dir });
+    });
+  });
+
+  router.get("/video-player", (req, res) => {
+    const filePath = req.query.path;
+    if (!filePath) {
+      return res.status(400).send("Missing file path");
+    }
+    const fileName = path.basename(filePath);
+    const fileExtension = path.extname(filePath);
+    const mimeType = getMimeType(fileExtension);
+    const captionsPath = filePath.replace(fileExtension, ".vtt");
+
+    res.render("videoPlayer", {
+      filePath,
+      fileName,
+      fileExtension,
+      mimeType,
+      captionsPath,
     });
   });
 

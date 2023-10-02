@@ -15,7 +15,7 @@ export default function createTorrentsRouter(downloadPath) {
   const router = Router();
 
   router.get("/", (req, res) => {
-    const dir = req.query.dir ? req.query.dir : "/";
+    const dir = req.query.dir ? decodeURIComponent(req.query.dir) : "/";
     const fullPath = path.join(downloadPath, dir);
 
     fs.readdir(fullPath, { withFileTypes: true }, (err, files) => {
@@ -23,7 +23,7 @@ export default function createTorrentsRouter(downloadPath) {
 
       const items = files.map((file) => {
         const url = file.isDirectory()
-          ? `/?dir=${path.join(dir, file.name)}`
+          ? `/?dir=${encodeURIComponent(path.join(dir, file.name))}`
           : null;
         return { name: file.name, isDirectory: file.isDirectory(), url };
       });

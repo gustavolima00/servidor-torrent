@@ -52,9 +52,9 @@
           <p><%= item.name %></p>
         </a>
       </div>
-      <% } else { const ext = item.name.split('.').pop(); %>
+      <% } else { const ext = item.name.split('.').pop(); %> <% if (['mp4',
+      'mkv', 'avi'].includes(ext)) { %>
       <div class="card">
-        <% if (['mp4', 'mkv', 'avi'].includes(ext)) { %>
         <a
           href="video-player?path=/downloads<%= currentDir %>/<%= item.name %>"
           target="_blank"
@@ -62,14 +62,15 @@
           <span class="icon">🎥</span>
           <p><%= item.name %></p>
         </a>
-        <% } else { %>
+      </div>
+      <% } else if (['vtt'].includes(ext)) { %> <% } else { %>
+      <div class="card">
         <a href="/downloads<%= currentDir %>/<%= item.name %>" target="_blank">
           <span class="icon">📄</span>
           <p><%= item.name %></p>
         </a>
-        <% } %>
       </div>
-      <% } %> <% }) %>
+      <% } %> <% } %> <% }) %>
     </div>
   </body>
 </html>

@@ -24,3 +24,5 @@ app.use(filesRouter);
 app.listen(PORT, () => {
   console.log(`Servidor está rodando em http://localhost:${PORT}`);
 });
+
+export default app;

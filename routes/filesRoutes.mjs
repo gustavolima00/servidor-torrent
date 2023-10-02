@@ -11,6 +11,13 @@ function getMimeType(fileExtension) {
   return mimeTypes[fileExtension];
 }
 
+function encodePathSegments(path) {
+  return path
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+}
+
 export default function createTorrentsRouter(downloadPath) {
   const router = Router();
 
@@ -33,7 +40,9 @@ export default function createTorrentsRouter(downloadPath) {
   });
 
   router.get("/video-player", (req, res) => {
-    const videoPath = req.query.path;
+    const videoPath = req.query.path
+      ? decodeURIComponent(req.query.path)
+      : null;
 
     if (!req.query.path) {
       return res.status(400).send("Missing file path");
@@ -54,11 +63,12 @@ export default function createTorrentsRouter(downloadPath) {
     const captions = [];
     fs.readdirSync(videoDir).forEach((file) => {
       const filePath = path.join(videoDir, file).replace(global.__basedir, "");
+      const encodedFilePath = encodePathSegments(filePath);
       const ext = path.extname(file);
       if (ext === ".vtt" && file.startsWith(name)) {
         const langCode = file.split("_")[1].split(".")[0];
         captions.push({
-          src: filePath,
+          src: encodedFilePath,
           lang: langCode,
           label: langCode.toUpperCase(),
           default: langCode === "pt",
@@ -66,15 +76,18 @@ export default function createTorrentsRouter(downloadPath) {
       }
     });
 
+    const encodedVideoPath = encodePathSegments(videoPath);
+
     console.log({
       videoPath,
       name,
       mimeType,
       captions,
+      encodedVideoPath,
     });
 
     res.render("videoPlayer", {
-      videoPath,
+      videoPath: encodedVideoPath,
       name,
       mimeType,
       captions,

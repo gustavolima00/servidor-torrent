@@ -42,9 +42,11 @@ export default function createTorrentsRouter(downloadPath) {
     const mimeType = getMimeType(fileExtension);
     const captionsPath = filePath.replace(fileExtension, ".vtt");
 
+    const fileNameWithoutExtension = fileName.replace(fileExtension, "");
+
     res.render("videoPlayer", {
       filePath,
-      fileName,
+      fileName: fileNameWithoutExtension,
       fileExtension,
       mimeType,
       captionsPath,

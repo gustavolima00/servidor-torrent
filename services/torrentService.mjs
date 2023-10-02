@@ -1,6 +1,27 @@
 import WebTorrent from "webtorrent";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import path from "path";
+import { exec } from "child_process";
+
+function convertFiles() {
+  exec("./convert_videos.sh", (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Erro ao executar convert_videos: ${error}`);
+      return;
+    }
+    console.log(`convert_videos stdout: ${stdout}`);
+    console.error(`convert_videos stderr: ${stderr}`);
+  });
+
+  exec("./convert_captions.sh", (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Erro ao executar convert_captions: ${error}`);
+      return;
+    }
+    console.log(`convert_captions stdout: ${stdout}`);
+    console.error(`convert_captions stderr: ${stderr}`);
+  });
+}
 
 class MagnetURIFileManager {
   constructor(magnetURIFile = "magnetURIs.json") {
@@ -96,6 +117,7 @@ export class TorrentService {
       console.log("Download concluído: " + torrent.name, torrent.infoHash);
 
       this.removeTorrent(torrent.infoHash);
+      convertFiles();
     });
   }
 

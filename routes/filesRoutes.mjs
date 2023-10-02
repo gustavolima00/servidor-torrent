@@ -28,12 +28,21 @@ export default function createTorrentsRouter(downloadPath) {
     fs.readdir(fullPath, { withFileTypes: true }, (err, files) => {
       if (err) return res.status(500).send("Erro ao ler o diretório");
 
-      const items = files.map((file) => {
+      let items = files.map((file) => {
         const url = file.isDirectory()
           ? `/?dir=${encodeURIComponent(path.join(dir, file.name))}`
           : null;
         return { name: file.name, isDirectory: file.isDirectory(), url };
       });
+
+      // Se não estamos no diretório raiz, adiciona um item para voltar ao diretório anterior.
+      if (dir !== "/") {
+        const parentDir = path.dirname(dir); // Obtém o diretório pai.
+        const parentDirUrl = `/?dir=${encodeURIComponent(parentDir)}`;
+        items = [{ name: "..", isDirectory: true, url: parentDirUrl }].concat(
+          items
+        ); // Adiciona ao início da lista.
+      }
 
       res.render("listFiles", { items, currentDir: dir });
     });
